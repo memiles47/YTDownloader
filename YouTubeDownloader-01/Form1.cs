@@ -43,7 +43,7 @@ namespace YouTubeDownloader_01
         private void btn_DownLoad_Click(object sender, EventArgs e)
         {
             // Our test youtube link
-            string link = "https://www.youtube.com/watch?v=k7AtfcRH8s0";
+            string link = "https://www.youtube.com/watch?v=f7oiNiZd9_w";
 
             /*
              * Get the available video formats.
@@ -52,10 +52,12 @@ namespace YouTubeDownloader_01
             IEnumerable<VideoInfo> videoInfos = DownloadUrlResolver.GetDownloadUrls(link);
 
             /*
-             * Select the first .mp4 video with 360p resolution
+             * We want the first extractable video with the highest audio quality.
              */
             VideoInfo video = videoInfos
-                .First(info => info.VideoType == VideoType.Mp4 && info.Resolution == 360);
+                .Where(info => info.CanExtractAudio)
+                .OrderByDescending(info => info.AudioBitrate)
+                .First();
 
             /*
              * If the video has a decrypted signature, decipher it
@@ -66,20 +68,22 @@ namespace YouTubeDownloader_01
             }
 
             /*
-             * Create the video downloader.
-             * The first argument is the video to download.
-             * The second argument is the path to save the video file.
+             * Create the audio downloader.
+             * The first argument is the video where the audio should be extracted from.
+             * The second argument is the path to save the audio file.
              */
-            var videoDownloader = new VideoDownloader(video, Path.Combine(tb_DownloadPath.Text, video.Title + video.VideoExtension));
+            var audioDownloader = new AudioDownloader(video, Path.Combine(tb_DownloadPath.Text, video.Title + video.AudioExtension));
 
-            // Register the ProgressChanged event and print the current progress
-            //videoDownloader.DownloadProgressChanged += (sender, args) => Console.WriteLine(args.ProgressPercentage);
+            // Register the progress events. We treat the download progress as 85% of the progress and the extraction progress only as 15% of the progress,
+            // because the download will take much longer than the audio extraction.
+            //audioDownloader.DownloadProgressChanged += (sender, args) => Console.WriteLine(args.ProgressPercentage * 0.85);
+            //audioDownloader.AudioExtractionProgressChanged += (sender, args) => Console.WriteLine(85 + args.ProgressPercentage * 0.15);
 
             /*
-             * Execute the video downloader.
+             * Execute the audio downloader.
              * For GUI applications note, that this method runs synchronously.
              */
-            videoDownloader.Execute();
+            audioDownloader.Execute();
 
         }
     }
