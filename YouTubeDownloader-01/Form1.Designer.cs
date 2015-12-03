@@ -80,6 +80,7 @@
             this.btn_Browse.TabIndex = 3;
             this.btn_Browse.Text = "Browse";
             this.btn_Browse.UseVisualStyleBackColor = true;
+            this.btn_Browse.Click += new System.EventHandler(this.btn_Browse_Click);
             // 
             // chk_OpenAfterDL
             // 
@@ -110,6 +111,9 @@
             // cmb_FileType
             // 
             this.cmb_FileType.FormattingEnabled = true;
+            this.cmb_FileType.Items.AddRange(new object[] {
+            "Video",
+            "MP3"});
             this.cmb_FileType.Location = new System.Drawing.Point(855, 261);
             this.cmb_FileType.Name = "cmb_FileType";
             this.cmb_FileType.Size = new System.Drawing.Size(100, 28);
@@ -123,6 +127,7 @@
             this.btn_DownLoad.TabIndex = 8;
             this.btn_DownLoad.Text = "DownLoad";
             this.btn_DownLoad.UseVisualStyleBackColor = true;
+            this.btn_DownLoad.Click += new System.EventHandler(this.btn_DownLoad_Click);
             // 
             // lbl_DecorateFileDownloading
             // 
