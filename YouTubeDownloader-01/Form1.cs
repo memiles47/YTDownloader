@@ -49,7 +49,12 @@ namespace YouTubeDownloader_01
         private Tuple<bool, string> ValidateLink()
         {
             string normalURL; //Normalized URL form YouTube
-            if (DownloadUrlResolver.TryNormalizeYoutubeUrl(tb_YouTubeURL.Text, out normalURL))
+            if (!Directory.Exists(tb_DownloadPath.Text))
+            {
+                MessageBox.Show("Please enter a valid download path");
+                return Tuple.Create(false, "");
+            }
+            else if (DownloadUrlResolver.TryNormalizeYoutubeUrl(tb_YouTubeURL.Text, out normalURL))
             {
                 return Tuple.Create(true, normalURL); //Return true if the URL is valid along with the URL
             }
@@ -58,7 +63,6 @@ namespace YouTubeDownloader_01
                 MessageBox.Show("Please enter a valid YouTube URL"); //Request a valid YouTube URL
                 return Tuple.Create(false, ""); //Return false and an empty string
             }
-
         }
     }
 }
