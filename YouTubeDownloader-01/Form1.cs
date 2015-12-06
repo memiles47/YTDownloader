@@ -43,7 +43,15 @@ namespace YouTubeDownloader_01
         private void btn_DownLoad_Click(object sender, EventArgs e)
         {
             Tuple<bool, string> isLinkGood = ValidateLink();
-            MessageBox.Show("Is it a good link? " + isLinkGood.Item1 + " Link is: " + isLinkGood.Item2);
+            if (isLinkGood.Item1)
+            {
+                /*
+                RestrictAccessAbility();
+                Pass the validated link into the download method
+                so it can be assigned a property in the YouTube video or audio model object
+                */
+                MessageBox.Show("Is it a good link? " + isLinkGood.Item1 + " Link is: " + isLinkGood.Item2);
+            }
         }
 
         private Tuple<bool, string> ValidateLink()
