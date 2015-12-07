@@ -9,7 +9,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using YoutubeExtractor;
-//using YouTubeDownloader;
 
 namespace YouTubeDownloader_01
 {
@@ -47,6 +46,19 @@ namespace YouTubeDownloader_01
             if (isLinkGood.Item1)
             {
                 RestrictAccessAbility(); // Call to prevent controls from working during download
+
+                Download(isLinkGood.Item2);
+            }
+        }
+
+        private void Download(string validatedLink)
+        {
+            if (cmb_FileType.SelectedIndex == 0)
+            {
+                YouTubeVideoModel VideoDownloader = new YouTubeVideoModel();
+                VideoDownloader.Link = validatedLink;
+                VideoDownloader.FolderPath = tb_DownloadPath.Text;
+                DownloadVideo(VideoDownloader);
             }
         }
 
