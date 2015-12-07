@@ -9,7 +9,7 @@ namespace YouTubeDownloader_01
 {
     public class YouTubeModel
     {
-        public IEnumerable<VideoInfo> videoInfo { get; set; }
+        public IEnumerable<VideoInfo> VideoInfo { get; set; }
         public string FolderPath { get; set; } //Store the folder we designated in folder browsing
         public string Link { get; set; } //This is the YouTube Link(URL) we type or paste in
         public string FilePath { get; set; } //Store the folder location we set up earlier + file name + extension

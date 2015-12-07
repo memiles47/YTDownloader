@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using YoutubeExtractor;
+//using YouTubeDownloader;
 
 namespace YouTubeDownloader_01
 {
@@ -45,13 +46,31 @@ namespace YouTubeDownloader_01
             Tuple<bool, string> isLinkGood = ValidateLink();
             if (isLinkGood.Item1)
             {
-                /*
-                RestrictAccessAbility();
-                Pass the validated link into the download method
-                so it can be assigned a property in the YouTube video or audio model object
-                */
-                MessageBox.Show("Is it a good link? " + isLinkGood.Item1 + " Link is: " + isLinkGood.Item2);
+                RestrictAccessAbility(); // Call to prevent controls from working during download
             }
+        }
+
+        private void EnableAccessAbility()
+        {
+            tb_DownloadPath.Text = "";
+            tb_YouTubeURL.Text = "";
+            tb_DownloadPath.Enabled = true;
+            tb_YouTubeURL.Enabled = true;
+            btn_Browse.Enabled = true;
+            chk_OpenAfterDL.Enabled = true;
+            btn_DownLoad.Enabled = true;
+            cmb_FileType.Enabled = true;
+            pg_Download.Value = 0;
+        }
+
+        private void RestrictAccessAbility()
+        {
+            tb_DownloadPath.Enabled = false;
+            tb_YouTubeURL.Enabled = false;
+            btn_Browse.Enabled = false;
+            chk_OpenAfterDL.Enabled = false;
+            btn_DownLoad.Enabled = false;
+            cmb_FileType.Enabled = false;
         }
 
         private Tuple<bool, string> ValidateLink()
