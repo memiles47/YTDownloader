@@ -45,13 +45,33 @@ namespace YouTubeDownloader_01
             Tuple<bool, string> isLinkGood = ValidateLink();
             if (isLinkGood.Item1)
             {
-                RestrictAccessAbility();
-                /*
-                Pass the validated link into the download method
-                so it can be assigned a property in the YouTube video or audio model object
-                */
-                MessageBox.Show("Is it a good link? " + isLinkGood.Item1 + " Link is: " + isLinkGood.Item2);
+                RestrictAccessAbility(); //Call to ensure controls don't work during download
+
+                Download(isLinkGood.item2);
             }
+        }
+
+        private void Download(object validatedLink)
+        {
+            if (cmb_FileType.SelectedIndex == 0)
+            {
+                YouTubeVideoModel VideoDownloader = new YouTubeModel();
+                VideoDownloader.Link = validatedLink;
+
+            }
+        }
+
+        private void EnableAccessAbility()
+        {
+            tb_DownloadPath.Text = ""; //Clear path text box: Didn't think about this one
+            tb_YouTubeURL.Text = ""; //Clear YouTube URL text box: Didn't think about this one
+            tb_DownloadPath.Enabled = true;
+            tb_YouTubeURL.Enabled = true;
+            btn_Browse.Enabled = true;
+            chk_OpenAfterDL.Enabled = true;
+            btn_DownLoad.Enabled = true;
+            cmb_FileType.Enabled = true;
+            pg_Download.Value = 0; //Forgot this one
         }
 
         private void RestrictAccessAbility() //Solution to Challenge (Correct)
