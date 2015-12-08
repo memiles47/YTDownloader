@@ -67,7 +67,47 @@ namespace YouTubeDownloader_01
                 YouTubeAudioModel AudioDownloader = new YouTubeAudioModel();
                 AudioDownloader.Link = validatedLink;
                 AudioDownloader.FolderPath = tb_DownloadPath.Text;
-                //DownloadAudio(AudioDownloader);
+                DownloadAudio(AudioDownloader);
+            }
+        }
+
+        private void DownloadAudio(YouTubeAudioModel audioDownloader)
+        {
+            try
+            {
+                //Store VideoInfo object in model
+                audioDownloader.VideoInfo = FileDownloader.GetVideoInfos(audioDownloader);
+
+                //Stores VideoInfo object in model
+                audioDownloader.Video = FileDownloader.GetVideoInfoAudioOnly(audioDownloader);
+
+                //Update label within console
+                UpdateLable(audioDownloader.Video.Title + audioDownloader.Video.AudioExtension);
+
+                //Stores FilePath in model
+                audioDownloader.FilePath = FileDownloader.GetPath(audioDownloader);
+                audioDownloader.FilePath += audioDownloader.Video.VideoExtension;
+
+                //Stores VideoDownloaderType object in model
+                audioDownloader.AudioDownloaderType = FileDownloader.GetAudioDownloader(audioDownloader);
+
+                //Enable controls once download is complete
+                audioDownloader.AudioDownloaderType.DownloadFinished += (sender, args) => EnableAccessAbility();
+
+                //Open folder with downloaded file selected
+                audioDownloader.AudioDownloaderType.DownloadFinished += (sender, args) => OpenFolder(audioDownloader.FilePath);
+
+                //Link progress bar up to download progress
+                audioDownloader.AudioDownloaderType.DownloadProgressChanged += (sender, args) => pg_Download.Value = (int)args.ProgressPercentage;
+                CheckForIllegalCrossThreadCalls = false;
+
+                //Download Video
+                FileDownloader.DownloadAudio(audioDownloader);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Download cancelled");
+                EnableAccessAbility();
             }
         }
 
@@ -134,6 +174,8 @@ namespace YouTubeDownloader_01
             btn_Browse.Enabled = true;
             chk_OpenAfterDL.Enabled = true;
             btn_DownLoad.Enabled = true;
+            cmb_FileType.Enabled = true;
+            pg_Download.Value = 0;
         }
 
         private void RestrictAccessAbility()
