@@ -3,6 +3,7 @@ using System.IO;  //Path
 using System.Linq;  //First() method 
 using System.Threading.Tasks;  //Task 
 using YouTubeDownloader_01;
+using YouTubeDownloader;
 using YoutubeExtractor;
 
 namespace YouTubeDownloader
@@ -81,9 +82,9 @@ namespace YouTubeDownloader
   
          //Downloads Video (Only for video model) 
          public static void DownloadVideo(YouTubeVideoModel vidDownloader)
-         { 
-             Task.Run(() => vidDownloader.VideoDownloaderType.Execute()); 
-         } 
+         {
+            Task.Run(() => vidDownloader.VideoDownloaderType.Execute()); 
+         }
   
          private static string CleanFileName(string fileName)
          { 

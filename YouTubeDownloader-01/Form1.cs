@@ -81,6 +81,9 @@ namespace YouTubeDownloader_01
                 //Stores VideoInfo object in model
                 videoDownloader.Video = FileDownloader.GetVideoInfo(videoDownloader);
 
+                //Update label within console
+                UpdateLable(videoDownloader.Video.Title + videoDownloader.Video.VideoExtension);
+
                 //Stores FilePath in model
                 videoDownloader.FilePath = FileDownloader.GetPath(videoDownloader);
                 videoDownloader.FilePath += videoDownloader.Video.VideoExtension;
@@ -106,6 +109,11 @@ namespace YouTubeDownloader_01
                 MessageBox.Show("Download cancelled");
                 EnableAccessAbility();
             }
+        }
+
+        private void UpdateLable(string downloadFileName)
+        {
+            lbl_FileName.Text = downloadFileName;
         }
 
         private void OpenFolder(string filePath)
