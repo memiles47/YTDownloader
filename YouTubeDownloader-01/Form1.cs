@@ -8,7 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using YouTubeDownloader;
 using YoutubeExtractor;
+using System.Diagnostics;
 
 namespace YouTubeDownloader_01
 {
@@ -60,6 +62,59 @@ namespace YouTubeDownloader_01
                 VideoDownloader.FolderPath = tb_DownloadPath.Text;
                 DownloadVideo(VideoDownloader);
             }
+            else
+            {
+                YouTubeAudioModel AudioDownloader = new YouTubeAudioModel();
+                AudioDownloader.Link = validatedLink;
+                AudioDownloader.FolderPath = tb_DownloadPath.Text;
+                //DownloadAudio(AudioDownloader);
+            }
+        }
+
+        private void DownloadVideo(YouTubeVideoModel videoDownloader)
+        {
+            try
+            {
+                //Store VideoInfo object in model
+                videoDownloader.VideoInfo = FileDownloader.GetVideoInfos(videoDownloader);
+
+                //Stores VideoInfo object in model
+                videoDownloader.Video = FileDownloader.GetVideoInfo(videoDownloader);
+
+                //Stores FilePath in model
+                videoDownloader.FilePath = FileDownloader.GetPath(videoDownloader);
+                videoDownloader.FilePath += videoDownloader.Video.VideoExtension;
+
+                //Stores VideoDownloaderType object in model
+                videoDownloader.VideoDownloaderType = FileDownloader.GetVideoDownloader(videoDownloader);
+
+                //Enable controls once download is complete
+                videoDownloader.VideoDownloaderType.DownloadFinished += (sender, args) => EnableAccessAbility();
+
+                //Open folder with downloaded file selected
+                videoDownloader.VideoDownloaderType.DownloadFinished += (sender, args) => OpenFolder(videoDownloader.FilePath);
+
+                //Link progress bar up to download progress
+                videoDownloader.VideoDownloaderType.DownloadProgressChanged += (sender, args) => pg_Download.Value = (int)args.ProgressPercentage;
+                CheckForIllegalCrossThreadCalls = false;
+
+                //Download Video
+                FileDownloader.DownloadVideo(videoDownloader);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Download cancelled");
+                EnableAccessAbility();
+            }
+        }
+
+        private void OpenFolder(string filePath)
+        {
+            string argument = "/select, \"" + filePath + "\"";
+            if (chk_OpenAfterDL.Checked)
+            {
+                Process.Start("explorer.exe", argument);
+            }
         }
 
         private void EnableAccessAbility()
@@ -71,8 +126,6 @@ namespace YouTubeDownloader_01
             btn_Browse.Enabled = true;
             chk_OpenAfterDL.Enabled = true;
             btn_DownLoad.Enabled = true;
-            cmb_FileType.Enabled = true;
-            pg_Download.Value = 0;
         }
 
         private void RestrictAccessAbility()
