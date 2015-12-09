@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using YouTubeDownloader;
 using YoutubeExtractor;
 using System.Diagnostics;
+using System.Net;
 
 namespace YouTubeDownloader_01
 {
@@ -47,8 +48,8 @@ namespace YouTubeDownloader_01
             Tuple<bool, string> isLinkGood = ValidateLink();
             if (isLinkGood.Item1)
             {
+                backgroundWorker1.RunWorkerAsync(isLinkGood.Item2);
                 RestrictAccessAbility(); // Call to prevent controls from working during download
-
                 Download(isLinkGood.Item2);
             }
         }
@@ -91,6 +92,9 @@ namespace YouTubeDownloader_01
                 //Stores VideoDownloaderType object in model
                 audioDownloader.AudioDownloaderType = FileDownloader.GetAudioDownloader(audioDownloader);
 
+                //Stop time after download is complete
+                audioDownloader.AudioDownloaderType.DownloadFinished += (sender, args) => timer1.Stop();
+
                 //Enable controls once download is complete
                 audioDownloader.AudioDownloaderType.DownloadFinished += (sender, args) => EnableAccessAbility();
 
@@ -130,6 +134,9 @@ namespace YouTubeDownloader_01
 
                 //Stores VideoDownloaderType object in model
                 videoDownloader.VideoDownloaderType = FileDownloader.GetVideoDownloader(videoDownloader);
+
+                //Stop time after download is complete
+                videoDownloader.VideoDownloaderType.DownloadFinished += (sender, args) => timer1.Stop();
 
                 //Enable controls once download is complete
                 videoDownloader.VideoDownloaderType.DownloadFinished += (sender, args) => EnableAccessAbility();
@@ -204,6 +211,49 @@ namespace YouTubeDownloader_01
 	        {
                 MessageBox.Show("Please enter a valid YouTube URL"); //Request a valid YouTube URL
                 return Tuple.Create(false, ""); //Return false and an empty string
+            }
+        }
+
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+            CheckForIllegalCrossThreadCalls = false;
+            string link = e.Argument as string;
+            string youtubeCode = link.Substring(link.Length - 11, 11);
+            string imageLink1 = "http://img.youtube.com/vi/" + youtubeCode + "/1.jpg";
+            string imageLink2 = "http://img.youtube.com/vi/" + youtubeCode + "/2.jpg";
+            string imageLink3 = "http://img.youtube.com/vi/" + youtubeCode + "/3.jpg";
+            using (var client = new WebClient())
+            {
+                client.DownloadFile(imageLink1, "1.jpg");
+                client.DownloadFile(imageLink2, "2.jpg");
+                client.DownloadFile(imageLink3, "3.jpg");
+            }
+            pic_PreviewBox.ImageLocation = "1.jpg";
+        }
+
+        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            timer1.Start();
+            timer1.Interval = 500;
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (pic_PreviewBox == null)
+            {
+                pic_PreviewBox.ImageLocation = "1.jpg";
+            }
+            if (pic_PreviewBox.ImageLocation == "1.jpg")
+            {
+                pic_PreviewBox.ImageLocation = "2.jpg";
+            }
+            else if (pic_PreviewBox.ImageLocation == "2.jpg")
+            {
+                pic_PreviewBox.ImageLocation = "3.jpg";
+            }
+            else if (pic_PreviewBox.ImageLocation == "3.jpg")
+            {
+                pic_PreviewBox.ImageLocation = "1.jpg";
             }
         }
     }
