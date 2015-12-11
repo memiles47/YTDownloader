@@ -17,7 +17,7 @@ namespace YouTubeDownloader_01
 {
     public partial class frm_YTDownloader : Form
     {
-        public frm_YTDownloader()
+        public frm_YTDownloader() //Class created when the form tool is selected from the tool box
         {
             InitializeComponent();
             cmb_FileType.SelectedIndex = 0; // Set "Video" as first choice
